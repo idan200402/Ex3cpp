@@ -2,9 +2,10 @@
 
 #pragma once
 #include <string>
-
+class Game;
+class Governor;
 namespace ex3 {
-    class Game;
+    
 
     class Player {
     protected:
@@ -29,13 +30,12 @@ namespace ex3 {
         const std::string& getLastTarget() const;
         bool isSanctioned() const;
 
-        virtual void gather() = 0;
-        virtual void tax() = 0;
-        virtual void bribe() = 0;
-        virtual void arrest(Player& target) = 0;
-        virtual void sanction(Player& target) = 0;
-        virtual void coup(Player& target) = 0;
-        virtual void undo(Player& target) = 0;
+        virtual void gather();
+        virtual void tax();
+        virtual void bribe();
+        virtual void arrest(Player& target);
+        virtual void sanction(Player& target);
+        virtual void coup(Player& target);
 
         void addCoins(int amount);
         void removeCoins(int amount);

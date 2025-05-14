@@ -12,7 +12,7 @@ namespace ex3 {
     public:
         Game();
         void addPlayer(Player* player);
-        std::vector<std::string>  getPlayers() const;
+        std::vector<Player*> getPlayers() const;
         std::string turn() const;
         std::string getWinner() const;
         void nextTurn();

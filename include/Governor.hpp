@@ -2,20 +2,18 @@
 
 #pragma once
 #include "Player.hpp"
+#include <unordered_map>
 
 namespace ex3 {
 
     class Governor : public Player {
+    private:
+        std::unordered_map<std::string, bool> enabledTax;
     public:
         Governor(Game& game, const std::string& name);
-
-        void gather() override;
+        void undo(Player& target);
+        std::unordered_map<std::string, bool>& getEnabledTax() const ;
         void tax() override;
-        void bribe() override;
-        void arrest(Player& target) override;
-        void sanction(Player& target) override;
-        void coup(Player& target) override;
-        void undo(Player& target) override;
     };
 
 }

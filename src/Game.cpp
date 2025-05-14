@@ -12,14 +12,14 @@ namespace ex3 {
         players.push_back(player);
     }
 
-    std::vector<std::string> Game::getPlayers() const {
-        std::vector<std::string> activePlayerNames;
-        for (Player* player : players) {
+    std::vector<Player*> Game::getPlayers() const {
+        std::vector<Player*> activePlayers;
+        for(Player* player : players) {
             if (player->isAlive()) {
-                activePlayerNames.push_back(player->getName());
+                activePlayers.push_back(player);
             }
         }
-        return activePlayerNames;
+        return activePlayers;  
     }
     std::string Game::turn() const {
         if (getActivePlayerCount() == 0) {

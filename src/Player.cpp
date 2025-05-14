@@ -3,6 +3,8 @@
 #include "Player.hpp"
 #include "Game.hpp"
 #include <stdexcept>
+#include "Governor.hpp"
+
 
 namespace ex3 {
 
@@ -71,4 +73,98 @@ namespace ex3 {
     void Player::markSanctioned(bool status) {
         sanctioned = status;
     }
-}
+    void Player::gather() {
+        if (!game.isPlayerTurn(this)) {
+            throw std::runtime_error("It's not your turn");
+        }
+        if (sanctioned) {
+            throw std::runtime_error("You are sanctioned");
+        }
+        addCoins(1);
+        lastMove = "gather";
+        lastTarget = "";
+        game.nextTurn();
+    }
+    void Player::tax() {
+        if (!game.isPlayerTurn(this)) {
+            throw std::runtime_error("It's not your turn");
+        }
+        if (sanctioned) {
+            throw std::runtime_error("You are sanctioned");
+        }
+        bool isEnabled = false;
+        for(auto& player : game.getPlayers()) {
+            if (player->getRole() == "Governor") {
+                auto governor = dynamic_cast<Governor*>(player);
+                if (governor == nullptr) {
+                    throw std::runtime_error("Player is not a Governor or the dinamic_cast failed");
+                }
+                auto Isfound = governor->getEnabledTax().find(this->getName());
+                if (Isfound != governor->getEnabledTax().end() && Isfound->second == true) {
+                    Isfound->second = false;
+                    isEnabled = true;
+                }
+            }
+        }
+        if (isEnabled) {
+            throw std::runtime_error("At least one Governor has enabled tax");
+        } 
+        addCoins(3);
+        lastMove = "tax";
+        lastTarget = "";
+        game.nextTurn();
+    }
+    void Player::bribe() {
+        if (!game.isPlayerTurn(this)) {
+            throw std::runtime_error("It's not your turn");
+        }
+        if(lastMove == "bribe") {
+            throw std::runtime_error("You cannot bribe twice in a row");
+        }
+        if (coins < 4) {
+            throw std::runtime_error("Not enough coins to bribe");
+        }
+        removeCoins(4);
+        lastMove = "bribe";
+        lastTarget = "";
+        game.nextTurn();
+    }
+    void Player::arrest(Player& target) {
+
+        if (!game.isPlayerTurn(this)) {
+            throw std::runtime_error("It's not your turn");
+        }
+        if (sanctioned) {
+            throw std::runtime_error("You are sanctioned");
+        }
+        if(lastMove == "arrest" && lastTarget == target.getName()) {
+            throw std::runtime_error("You cannot arrest the same player twice in a row");
+        }
+        lastMove = "arrest";
+        lastTarget = target.getName();
+        game.removePlayer(&target);
+        game.nextTurn();
+    }
+    void Player::sanction(Player& target) {
+        if (!game.isPlayerTurn(this)) {
+            throw std::runtime_error("It's not your turn");
+        }
+        lastMove = "sanction";
+        lastTarget = target.getName();
+        target.markSanctioned(true);
+        game.nextTurn();
+    }
+    void Player::coup(Player& target) {
+        if (!game.isPlayerTurn(this)) {
+            throw std::runtime_error("It's not your turn");
+        }
+        if (coins < 7) {
+            throw std::runtime_error("Not enough coins to coup");
+        }
+        removeCoins(7);
+        lastMove = "coup";
+        lastTarget = target.getName();
+        game.removePlayer(&target);
+        game.nextTurn();
+    }
+}       
