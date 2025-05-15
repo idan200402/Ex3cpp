@@ -12,7 +12,7 @@ namespace ex3 {
     public:
         Governor(Game& game, const std::string& name);
         void undo(Player& target);
-        std::unordered_map<std::string, bool>& getEnabledTax() const ;
+        std::unordered_map<std::string, bool>& getEnabledTax();
         void tax() override;
     };
 

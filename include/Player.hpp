@@ -17,7 +17,8 @@ namespace ex3 {
         std::string lastMove;
         std::string lastTarget;
         bool sanctioned;
-
+        bool hasNextTurn;
+        virtual void whenSanctioned(const std::string& actionName) {}
     public:
         Player(Game& game, const std::string& name);
         virtual ~Player() = default;
@@ -28,7 +29,7 @@ namespace ex3 {
         bool isAlive() const;
         const std::string& getLastMove() const;
         const std::string& getLastTarget() const;
-        bool isSanctioned() const;
+        bool isSanctioned() ;
 
         virtual void gather();
         virtual void tax();

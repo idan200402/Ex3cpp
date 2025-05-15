@@ -13,7 +13,7 @@ namespace ex3 {
         if (!game.isPlayerTurn(this)) {
             throw std::runtime_error("It's not your turn");
         }
-        if (sanctioned) {
+        if (isSanctioned()) {
             throw std::runtime_error("You are sanctioned");
         }
         addCoins(3);
@@ -27,7 +27,7 @@ namespace ex3 {
         }
         enabledTax[target.getName()] = true;
     }
-    std::unordered_map<std::string, bool>& Governor::getEnabledTax() const {
+    std::unordered_map<std::string, bool>& Governor::getEnabledTax()  {
         return enabledTax;
     }
 

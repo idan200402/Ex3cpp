@@ -50,6 +50,11 @@ namespace ex3 {
         if (getActivePlayerCount() <= 1) {
             return; // No more turns if only one player is left
         }
+        Player* currentPlayer = players[currentPlayerIndex];
+        if (currentPlayer->hasNextTurn) {
+            currentPlayer->hasNextTurn = false;
+            return; // Skip to the next player
+        }
         do{
             currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
         } while(!players[currentPlayerIndex]->isAlive());

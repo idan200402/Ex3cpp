@@ -4,6 +4,7 @@
 #include "Game.hpp"
 #include <stdexcept>
 #include "Governor.hpp"
+#include "Spy.hpp"
 
 
 namespace ex3 {
@@ -11,12 +12,13 @@ namespace ex3 {
     Player::Player(Game& game, const std::string& name)
         : game(game),
           name(name),
-          role(""),
           coins(0),
+          role(""),
           alive(true),
           lastMove(""),
           lastTarget(""),
-          sanctioned(false)
+          sanctioned(false),
+          hasNextTurn(false)
     {
         game.addPlayer(this);
     }
@@ -45,8 +47,10 @@ namespace ex3 {
         return lastTarget;
     }
 
-    bool Player::isSanctioned() const {
-        return sanctioned;
+    bool Player::isSanctioned() {
+        bool currentSanctioned = sanctioned;
+        this->sanctioned = false; // Reset the sanctioned status after checking
+        return currentSanctioned;
     }
 
     void Player::addCoins(int amount) {
@@ -77,7 +81,8 @@ namespace ex3 {
         if (!game.isPlayerTurn(this)) {
             throw std::runtime_error("It's not your turn");
         }
-        if (sanctioned) {
+        if (isSanctioned()) {
+            whenSanctioned("gather");
             throw std::runtime_error("You are sanctioned");
         }
         addCoins(1);
@@ -88,9 +93,6 @@ namespace ex3 {
     void Player::tax() {
         if (!game.isPlayerTurn(this)) {
             throw std::runtime_error("It's not your turn");
-        }
-        if (sanctioned) {
-            throw std::runtime_error("You are sanctioned");
         }
         bool isEnabled = false;
         for(auto& player : game.getPlayers()) {
@@ -107,8 +109,10 @@ namespace ex3 {
             }
         }
         if (isEnabled) {
+            game.nextTurn();
+            whenSanctioned("tax");
             throw std::runtime_error("At least one Governor has enabled tax");
-        } 
+        }   
         addCoins(3);
         lastMove = "tax";
         lastTarget = "";
@@ -125,6 +129,7 @@ namespace ex3 {
             throw std::runtime_error("Not enough coins to bribe");
         }
         removeCoins(4);
+        hasNextTurn = true;
         lastMove = "bribe";
         lastTarget = "";
         game.nextTurn();
@@ -134,8 +139,24 @@ namespace ex3 {
         if (!game.isPlayerTurn(this)) {
             throw std::runtime_error("It's not your turn");
         }
-        if (sanctioned) {
-            throw std::runtime_error("You are sanctioned");
+        bool isBlocked = false;
+        for(auto& player : game.getPlayers()) {
+            if (player->getRole() == "Spy") {
+                auto spy = dynamic_cast<Spy*>(player);
+                if (spy == nullptr) {
+                    throw std::runtime_error("Player is not a Spy or the dinamic_cast failed");
+                }
+                auto Isfound = spy->getArrestDisabled().find(target.getName());
+                if (Isfound != spy->getArrestDisabled().end() && Isfound->second == true) {
+                    Isfound->second = false;
+                    isBlocked = true;
+
+                }
+            }
+        }
+        if (isBlocked) {
+            game.nextTurn();
+            throw std::runtime_error("Arrest is blocked by a Spy");
         }
         if(lastMove == "arrest" && lastTarget == target.getName()) {
             throw std::runtime_error("You cannot arrest the same player twice in a row");
@@ -167,4 +188,5 @@ namespace ex3 {
         game.removePlayer(&target);
         game.nextTurn();
     }
+        
 }       
