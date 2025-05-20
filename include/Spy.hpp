@@ -6,6 +6,7 @@
     private:
         int blockArrestCount;
         std::unordered_map<std::string, bool> arrestdisabled;
+        std::unordered_map<std::string, int> indexOfArrestDisabled;
     public:
         Spy(Game& game, const std::string& name);
         int inspectCoins(Player& target);
@@ -13,6 +14,7 @@
         std::unordered_map<std::string, bool>& getArrestDisabled() {
             return arrestdisabled;
         }
+        void onStartTurn() override;
     };
 }
         

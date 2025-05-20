@@ -20,7 +20,7 @@ namespace ex3 {
         virtual void whenSanctioned(const std::string& actionName) {}
         
     public:
-        virtual void onStartTurn() {}
+        virtual void onStartTurn();
         bool hasNextTurn;
         Player(Game& game, const std::string& name);
         virtual ~Player() = default;

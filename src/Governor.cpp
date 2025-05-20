@@ -7,6 +7,7 @@ namespace ex3 {
         : Player(game, name) {
         this->role = "Governor";
         this->enabledTax = {};
+        this->indexOfEnabledTax = {};
     }
 
     void Governor::tax() {
@@ -29,6 +30,19 @@ namespace ex3 {
     }
     std::unordered_map<std::string, bool>& Governor::getEnabledTax()  {
         return enabledTax;
+    }
+    void Governor::onStartTurn() {
+        int currectTurn = game.getTurnCounter();
+        for(auto it = enabledTax.begin(); it != enabledTax.end();) {
+            const std::string& playerName = it->first;
+            if(indexOfEnabledTax.count(playerName)>0 && indexOfEnabledTax[playerName] < currectTurn) {
+                it = enabledTax.erase(it);
+                indexOfEnabledTax.erase(playerName);
+            } else {
+                ++it;
+            } 
+        }
+        Player::onStartTurn();
     }
 
 }

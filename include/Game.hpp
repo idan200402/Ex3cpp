@@ -7,6 +7,7 @@ namespace ex3 {
     class Player;
     class Game {
     private:
+        int turnCounter;
         int currentPlayerIndex;
         std::vector<Player*> players;
     public:
@@ -19,6 +20,7 @@ namespace ex3 {
         bool isPlayerTurn(Player* p) const;
         void removePlayer(Player* p);
         int getActivePlayerCount() const;
+        int getTurnCounter() const;
     };  
 }
         

@@ -3,11 +3,16 @@
 #include <stdexcept>
 
 namespace ex3 {
-    Game::Game() : currentPlayerIndex(0){}
+    Game::Game() : currentPlayerIndex(0), turnCounter(0){}
 
     void Game::addPlayer(Player* player) {
         if (players.size() >= 6) {
             throw std::out_of_range("Cannot add more than 6 players");
+        }
+        for(Player* p : players) {
+            if (p->getName() == player->getName()) {
+                throw std::invalid_argument("Player with this name already exists");
+            }
         }
         players.push_back(player);
     }
@@ -46,6 +51,9 @@ namespace ex3 {
             }
         }
     }
+    int Game::getTurnCounter() const {
+        return turnCounter;
+    }
     void Game::nextTurn() {
         if (getActivePlayerCount() <= 1) {
             return; // No more turns if only one player is left
@@ -58,6 +66,7 @@ namespace ex3 {
         do{
             currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
         } while(!players[currentPlayerIndex]->isAlive());
+        turnCounter++;
         currentPlayer->onStartTurn();
     }
     bool Game::isPlayerTurn(Player* p) const {

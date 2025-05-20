@@ -22,6 +22,9 @@ namespace ex3 {
           sanctioned(false),
           hasNextTurn(false)
     {
+        if (name.empty()) {
+            throw std::invalid_argument("Name cannot be empty");
+        }
         game.addPlayer(this);
     }
 
@@ -70,6 +73,16 @@ namespace ex3 {
             throw std::runtime_error("Not enough coins");
         }
         coins -= amount;
+    }
+    void Player::onStartTurn() {
+        if(coins >= 10) {
+            for(auto& player : game.getPlayers()) {
+                if (player!= this &&player->isAlive()) {
+                    this->coup(*player);
+                    break;
+                }
+            }
+        }
     }
 
     void Player::deactivate() {

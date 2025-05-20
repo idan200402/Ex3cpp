@@ -8,6 +8,7 @@ namespace ex3 {
         : Player(game, name) {
         this->role = "Spy";
         this->arrestdisabled = {};
+        this->indexOfArrestDisabled = {};
         this->blockArrestCount = 0;
     }
     int Spy::inspectCoins(Player& target) {
@@ -35,4 +36,18 @@ namespace ex3 {
     std::unordered_map<std::string, bool>& Spy::getArrestDisabled() {
         return arrestdisabled;
     }
+    void Spy::onStartTurn() {
+        int currectTurn = game.getTurnCounter();
+        for(auto it = arrestdisabled.begin(); it != arrestdisabled.end();) {
+            const std::string& playerName = it->first;
+            if(indexOfArrestDisabled.count(playerName)>0 && indexOfArrestDisabled[playerName] < currectTurn) {
+                it = arrestdisabled.erase(it);
+                indexOfArrestDisabled.erase(playerName);
+            } else {
+                ++it;
+            } 
+        }
+        Player::onStartTurn();
+    }
+        
 }
