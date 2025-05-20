@@ -17,9 +17,11 @@ namespace ex3 {
         std::string lastMove;
         std::string lastTarget;
         bool sanctioned;
-        bool hasNextTurn;
         virtual void whenSanctioned(const std::string& actionName) {}
+        
     public:
+        virtual void onStartTurn() {}
+        bool hasNextTurn;
         Player(Game& game, const std::string& name);
         virtual ~Player() = default;
 

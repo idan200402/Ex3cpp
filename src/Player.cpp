@@ -5,7 +5,9 @@
 #include <stdexcept>
 #include "Governor.hpp"
 #include "Spy.hpp"
-
+#include <iostream>
+#include "General.hpp"
+#include "Judge.hpp"
 
 namespace ex3 {
 
@@ -129,10 +131,32 @@ namespace ex3 {
             throw std::runtime_error("Not enough coins to bribe");
         }
         removeCoins(4);
-        hasNextTurn = true;
-        lastMove = "bribe";
-        lastTarget = "";
-        game.nextTurn();
+        bool isBlocked = false;
+        for(auto& player : game.getPlayers()) {
+            if (player->getRole() == "Judge") {
+                auto judge = dynamic_cast<Judge*>(player);
+                if (judge == nullptr) {
+                    throw std::runtime_error("Player is not a Judge or the dinamic_cast failed");
+                }
+                auto Isfound = judge->getBlockBribed().find(this->getName());
+                if (Isfound != judge->getBlockBribed().end() && Isfound->second == true) {
+                    Isfound->second = false;
+                    isBlocked = true;
+                }
+            }
+        }
+        if(isBlocked) {
+            lastMove = "bribe";
+            lastTarget = "";
+            game.nextTurn();
+            std::cout << this->getName() << " was blocked from bribing by a Judge" << std::endl;
+        }
+        else{
+            hasNextTurn = true;
+            lastMove = "bribe";
+            lastTarget = "";
+            game.nextTurn();
+        }
     }
     void Player::arrest(Player& target) {
 
@@ -156,21 +180,32 @@ namespace ex3 {
         }
         if (isBlocked) {
             game.nextTurn();
-            throw std::runtime_error("Arrest is blocked by a Spy");
+            std::cout << target.getName() << " was blocked from being arrested by a Spy" << std::endl;
         }
         if(lastMove == "arrest" && lastTarget == target.getName()) {
             throw std::runtime_error("You cannot arrest the same player twice in a row");
         }
         lastMove = "arrest";
         lastTarget = target.getName();
-        game.removePlayer(&target);
-        game.nextTurn();
+        if(target.getRole() !="Merchand") {
+            addCoins(1);
+            target.removeCoins(1);
+            game.nextTurn();
+        }
+        else{
+            target.removeCoins(2);
+            game.nextTurn();
+        }
+        
     }
     void Player::sanction(Player& target) {
         if (!game.isPlayerTurn(this)) {
             throw std::runtime_error("It's not your turn");
         }
         lastMove = "sanction";
+        if (target.getRole() == "Judge") {
+            removeCoins(1);
+        }
         lastTarget = target.getName();
         target.markSanctioned(true);
         game.nextTurn();
@@ -185,6 +220,25 @@ namespace ex3 {
         removeCoins(7);
         lastMove = "coup";
         lastTarget = target.getName();
+        bool isSaved = false;
+        for(auto& player : game.getPlayers()) {
+            if (player->getRole() == "General") {
+                auto general = dynamic_cast<General*>(player);
+                if (general == nullptr) {
+                    throw std::runtime_error("Player is not a General or the dinamic_cast failed");
+                }
+                auto Isfound = general->getSavedFromCoup().find(target.getName());
+                if (Isfound != general->getSavedFromCoup().end() && Isfound->second == true) {
+                    Isfound->second = false;
+                    isSaved = true;
+                }
+            }
+        }
+        if (isSaved) {
+            game.nextTurn();
+            std::cout << target.getName() << " was saved from coup by a General" << std::endl;
+            return;
+        }
         game.removePlayer(&target);
         game.nextTurn();
     }

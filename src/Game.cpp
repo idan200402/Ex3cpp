@@ -58,6 +58,7 @@ namespace ex3 {
         do{
             currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
         } while(!players[currentPlayerIndex]->isAlive());
+        currentPlayer->onStartTurn();
     }
     bool Game::isPlayerTurn(Player* p) const {
         return players[currentPlayerIndex] == p;
