@@ -1,5 +1,5 @@
-#include "Merchand.hpp"
-#include "Game.hpp"
+#include "../include/Merchand.hpp"
+#include "../include/Game.hpp"
 #include <stdexcept>
 
 namespace ex3 {

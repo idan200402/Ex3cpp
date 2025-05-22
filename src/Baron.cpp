@@ -1,5 +1,5 @@
-#include "Baron.hpp"
-#include "Game.hpp"
+#include "../include/Baron.hpp"
+#include "../include/Game.hpp"
 #include <stdexcept>
 
 namespace ex3 {

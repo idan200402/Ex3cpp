@@ -1,5 +1,5 @@
-#include "Governor.hpp"
-#include "Game.hpp"
+#include "../include/Governor.hpp"
+#include "../include/Game.hpp"
 #include <stdexcept>
 
 namespace ex3 {

@@ -2,7 +2,7 @@
 
 #pragma once
 #include <string>
-class Game;
+#include "../include/Game.hpp"
 class Governor;
 namespace ex3 {
     
@@ -17,13 +17,12 @@ namespace ex3 {
         std::string lastMove;
         std::string lastTarget;
         bool sanctioned;
-        virtual void whenSanctioned(const std::string& actionName) {}
+        virtual void whenSanctioned(const std::string& /*actionName*/) {}
         
     public:
         virtual void onStartTurn();
         bool hasNextTurn;
         Player(Game& game, const std::string& name);
-        virtual ~Player() = default;
 
         const std::string& getName() const;
         const std::string& getRole() const;
@@ -44,5 +43,6 @@ namespace ex3 {
         void removeCoins(int amount);
         void deactivate();
         void markSanctioned(bool status);
+        virtual ~Player() ;
     };
 }

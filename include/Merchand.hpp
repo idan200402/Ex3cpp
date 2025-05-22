@@ -6,5 +6,5 @@ namespace ex3 {
         public:
             Merchand(Game& game, const std::string& name);
             void onStartTurn() override;
-    }
+    };
 }

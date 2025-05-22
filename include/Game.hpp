@@ -7,6 +7,7 @@ namespace ex3 {
     class Player;
     class Game {
     private:
+        bool shuttingDown;
         int turnCounter;
         int currentPlayerIndex;
         std::vector<Player*> players;
@@ -21,6 +22,11 @@ namespace ex3 {
         void removePlayer(Player* p);
         int getActivePlayerCount() const;
         int getTurnCounter() const;
+        ~Game();
+        bool isShuttingDown() const;
+        bool isPlayerAlive(Player& p) const;
+        void forceTurnTo(Player* player);
+      
     };  
 }
         

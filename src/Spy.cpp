@@ -1,5 +1,5 @@
-#include "Spy.hpp"
-#include "Game.hpp"
+#include "../include/Spy.hpp"
+#include "../include/Game.hpp"
 #include <iostream>
 #include <stdexcept>
 
@@ -17,7 +17,6 @@ namespace ex3 {
         }
         lastMove = "inspect";
         lastTarget = target.getName();
-        game.nextTurn();
         return target.getCoinsCount();
     }
     void Spy::blockArrest(Player& target) {

@@ -1,21 +1,21 @@
 // idan.shumski@gmail.com
 
-#include "Player.hpp"
-#include "Game.hpp"
+#include "../include/Player.hpp"
+#include "../include/Game.hpp"
 #include <stdexcept>
-#include "Governor.hpp"
-#include "Spy.hpp"
+#include "../include/Governor.hpp"
+#include "../include/Spy.hpp"
 #include <iostream>
-#include "General.hpp"
-#include "Judge.hpp"
+#include "../include/General.hpp"
+#include "../include/Judge.hpp"
 
 namespace ex3 {
 
     Player::Player(Game& game, const std::string& name)
         : game(game),
           name(name),
-          coins(0),
           role(""),
+          coins(0),
           alive(true),
           lastMove(""),
           lastTarget(""),
@@ -25,6 +25,7 @@ namespace ex3 {
         if (name.empty()) {
             throw std::invalid_argument("Name cannot be empty");
         }
+        //std::cout << "Created player: " << name << " with coins = " << coins << std::endl;
         game.addPlayer(this);
     }
 
@@ -51,6 +52,9 @@ namespace ex3 {
     const std::string& Player::getLastTarget() const {
         return lastTarget;
     }
+    Player::~Player() {
+        //no need to delete game, as it is not owned by this class
+    }
 
     bool Player::isSanctioned() {
         bool currentSanctioned = sanctioned;
@@ -75,6 +79,10 @@ namespace ex3 {
         coins -= amount;
     }
     void Player::onStartTurn() {
+        if(game.isShuttingDown()) {
+            throw std::runtime_error("Game is shutting down");
+        }
+        //std::cout << this->getName() << " is starting their turn with " << this->getCoinsCount() << " coins." << std::endl;
         if(coins >= 10) {
             for(auto& player : game.getPlayers()) {
                 if (player!= this &&player->isAlive()) {
@@ -125,7 +133,7 @@ namespace ex3 {
         }
         if (isEnabled) {
             game.nextTurn();
-            whenSanctioned("tax");
+            //whenSanctioned("tax");
             throw std::runtime_error("At least one Governor has enabled tax");
         }   
         addCoins(3);
@@ -133,49 +141,55 @@ namespace ex3 {
         lastTarget = "";
         game.nextTurn();
     }
-    void Player::bribe() {
-        if (!game.isPlayerTurn(this)) {
-            throw std::runtime_error("It's not your turn");
-        }
-        if(lastMove == "bribe") {
-            throw std::runtime_error("You cannot bribe twice in a row");
-        }
-        if (coins < 4) {
-            throw std::runtime_error("Not enough coins to bribe");
-        }
-        removeCoins(4);
-        bool isBlocked = false;
-        for(auto& player : game.getPlayers()) {
-            if (player->getRole() == "Judge") {
-                auto judge = dynamic_cast<Judge*>(player);
-                if (judge == nullptr) {
-                    throw std::runtime_error("Player is not a Judge or the dinamic_cast failed");
-                }
-                auto Isfound = judge->getBlockBribed().find(this->getName());
-                if (Isfound != judge->getBlockBribed().end() && Isfound->second == true) {
-                    Isfound->second = false;
-                    isBlocked = true;
-                }
+   void Player::bribe() {
+    if (!game.isPlayerTurn(this)) {
+        throw std::runtime_error("It's not your turn");
+    }
+    if (lastMove == "bribe") {
+        throw std::runtime_error("You cannot bribe twice in a row");
+    }
+    if (coins < 4) {
+        throw std::runtime_error("Not enough coins to bribe");
+    }
+    removeCoins(4);
+
+    bool isBlocked = false;
+    for (auto& player : game.getPlayers()) {
+        if (player->getRole() == "Judge") {
+            auto judge = dynamic_cast<Judge*>(player);
+            if (judge == nullptr) {
+                throw std::runtime_error("Player is not a Judge or the dynamic_cast failed");
+            }
+            auto Isfound = judge->getBlockBribed().find(this->getName());
+            if (Isfound != judge->getBlockBribed().end() && Isfound->second == true) {
+                Isfound->second = false;
+                isBlocked = true;
             }
         }
-        if(isBlocked) {
-            lastMove = "bribe";
-            lastTarget = "";
-            game.nextTurn();
-            std::cout << this->getName() << " was blocked from bribing by a Judge" << std::endl;
-        }
-        else{
-            hasNextTurn = true;
-            lastMove = "bribe";
-            lastTarget = "";
-            game.nextTurn();
-        }
     }
+
+    lastMove = "bribe";
+    lastTarget = "";
+
+    if (!isBlocked) {
+        hasNextTurn = true;
+    } else {
+       throw std::runtime_error("Bribe was blocked by a Judge");
+    }
+
+    
+}
+
+
     void Player::arrest(Player& target) {
 
         if (!game.isPlayerTurn(this)) {
             throw std::runtime_error("It's not your turn");
         }
+        if(game.isPlayerAlive(target) == false) {
+            throw std::runtime_error("Target is not alive");
+        }
+        
         bool isBlocked = false;
         for(auto& player : game.getPlayers()) {
             if (player->getRole() == "Spy") {
@@ -200,9 +214,18 @@ namespace ex3 {
         }
         lastMove = "arrest";
         lastTarget = target.getName();
-        if(target.getRole() !="Merchand") {
+        if(target.getRole() == "General") {
             addCoins(1);
+            game.nextTurn();
+            return;
+        }
+        if(target.getRole() !="Merchand") {
+            if(target.getCoinsCount() <1){
+                game.nextTurn();
+                return;
+            }
             target.removeCoins(1);
+            this->addCoins(1);
             game.nextTurn();
         }
         else{
@@ -215,7 +238,11 @@ namespace ex3 {
         if (!game.isPlayerTurn(this)) {
             throw std::runtime_error("It's not your turn");
         }
+        if(this->getCoinsCount() < 3 ) {
+            throw std::runtime_error("Not enough coins to sanction");
+        }
         lastMove = "sanction";
+        removeCoins(3);
         if (target.getRole() == "Judge") {
             removeCoins(1);
         }
@@ -228,6 +255,7 @@ namespace ex3 {
             throw std::runtime_error("It's not your turn");
         }
         if (coins < 7) {
+            //std::cout << "Player " << this->getName() << " tried to coup " << target.getName() << " but doesn't have enough coins." << std::endl;
             throw std::runtime_error("Not enough coins to coup");
         }
         removeCoins(7);
@@ -242,14 +270,14 @@ namespace ex3 {
                 }
                 auto Isfound = general->getSavedFromCoup().find(target.getName());
                 if (Isfound != general->getSavedFromCoup().end() && Isfound->second == true) {
-                    Isfound->second = false;
                     isSaved = true;
+                    break;
                 }
             }
         }
         if (isSaved) {
-            game.nextTurn();
             std::cout << target.getName() << " was saved from coup by a General" << std::endl;
+            game.nextTurn();
             return;
         }
         game.removePlayer(&target);

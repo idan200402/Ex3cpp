@@ -6,8 +6,6 @@ namespace ex3 {
     public:
         Baron(Game& game, const std::string& name);
         void invest();
-        void tax() override;
-        void gather() override;
         void whenSanctioned(const std::string& actionName) override;
     };
 }

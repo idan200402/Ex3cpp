@@ -1,31 +1,48 @@
-# idan.shumski@gmail.com
-
 CXX = g++
-CXXFLAGS = -Wall -Wextra -std=c++17 -g -Iinclude
-SRC = src
-INCLUDE = include
-OBJS = main.o Game.o Player.o Governor.o
-TARGET = CoupGame
+CXXFLAGS = -std=c++17 -Wall -Wextra -Iinclude
 
-all: $(TARGET)
+SRC_DIR = src
+OBJ_DIR = obj
+BIN_DIR = bin
 
-$(TARGET): $(OBJS)
-	$(CXX) $(CXXFLAGS) -o $(TARGET) $(OBJS)
+SOURCES := $(wildcard $(SRC_DIR)/*.cpp)
+OBJECTS := $(patsubst $(SRC_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(SOURCES))
+TEST_OBJ = $(OBJ_DIR)/tests.o
+MAIN_OBJ = $(OBJ_DIR)/main.o
 
-main.o: $(SRC)/main.cpp $(INCLUDE)/Game.hpp $(INCLUDE)/Player.hpp $(INCLUDE)/Governor.hpp
-	$(CXX) $(CXXFLAGS) -c $(SRC)/main.cpp
+TARGET_MAIN = $(BIN_DIR)/Main
+TARGET_TEST = $(BIN_DIR)/Tests
 
-Game.o: $(SRC)/Game.cpp $(INCLUDE)/Game.hpp $(INCLUDE)/Player.hpp
-	$(CXX) $(CXXFLAGS) -c $(SRC)/Game.cpp
+DOCTEST = doctest.h
 
-Player.o: $(SRC)/Player.cpp $(INCLUDE)/Player.hpp $(INCLUDE)/Game.hpp
-	$(CXX) $(CXXFLAGS) -c $(SRC)/Player.cpp
+all: Main
 
-Governor.o: $(SRC)/Governor.cpp $(INCLUDE)/Governor.hpp $(INCLUDE)/Player.hpp $(INCLUDE)/Game.hpp
-	$(CXX) $(CXXFLAGS) -c $(SRC)/Governor.cpp
+Main: $(MAIN_OBJ) $(filter-out $(TEST_OBJ), $(OBJECTS)) | $(BIN_DIR)
+	$(CXX) $(CXXFLAGS) $^ -o $(TARGET_MAIN)
+	./$(TARGET_MAIN)
+
+test: $(TEST_OBJ) $(filter-out $(MAIN_OBJ), $(OBJECTS)) | $(BIN_DIR)
+	$(CXX) $(CXXFLAGS) $^ -o $(TARGET_TEST)
+	./$(TARGET_TEST)
+
+valgrind: Main test
+	valgrind --leak-check=full $(TARGET_MAIN)
+	valgrind --leak-check=full $(TARGET_TEST)
+
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp | $(OBJ_DIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+$(OBJ_DIR)/main.o: src/main.cpp | $(OBJ_DIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+$(OBJ_DIR)/tests.o: tests.cpp $(DOCTEST) | $(OBJ_DIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+$(OBJ_DIR):
+	mkdir -p $(OBJ_DIR)
+
+$(BIN_DIR):
+	mkdir -p $(BIN_DIR)
 
 clean:
-	rm -f *.o $(TARGET)
-
-run: all
-	./$(TARGET)
+	rm -rf $(OBJ_DIR) $(BIN_DIR)

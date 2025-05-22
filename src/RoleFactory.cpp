@@ -1,10 +1,10 @@
-#include "RoleFactory.hpp"
-#include "Baron.hpp"
-#include "General.hpp"
-#include "Governor.hpp"
-#include "Judge.hpp"
-#include "Merchand.hpp"
-#include "Spy.hpp"
+#include "../include/RoleFactory.hpp"
+#include "../include/Baron.hpp"
+#include "../include/General.hpp"
+#include "../include/Governor.hpp"
+#include "../include/Judge.hpp"
+#include "../include/Merchand.hpp"
+#include "../include/Spy.hpp"
 #include <stdexcept>
 
 namespace ex3 {

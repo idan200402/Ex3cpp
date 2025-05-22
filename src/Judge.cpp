@@ -1,5 +1,5 @@
-#include "Judge.hpp"
-#include "Game.hpp"
+#include "../include/Judge.hpp"
+#include "../include/Game.hpp"
 #include <stdexcept>
 
 namespace ex3 {

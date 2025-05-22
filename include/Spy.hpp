@@ -11,9 +11,7 @@
         Spy(Game& game, const std::string& name);
         int inspectCoins(Player& target);
         void blockArrest(Player& target); 
-        std::unordered_map<std::string, bool>& getArrestDisabled() {
-            return arrestdisabled;
-        }
+        std::unordered_map<std::string, bool>& getArrestDisabled();
         void onStartTurn() override;
     };
 }

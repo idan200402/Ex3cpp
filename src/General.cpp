@@ -1,5 +1,5 @@
-#include "General.hpp"
-#include "Game.hpp"
+#include "../include/General.hpp"
+#include "../include/Game.hpp"
 #include <stdexcept>
 
 namespace ex3 {
@@ -19,23 +19,26 @@ namespace ex3 {
         }
         this->removeCoins(5);
         savedFromCoup[target.getName()] = true;
-        indexOfSavedFromCoup[target.getName()] = target.getCoinsCount();
+        indexOfSavedFromCoup[target.getName()] = game.getTurnCounter();
     }
     std::unordered_map<std::string, bool>& General::getSavedFromCoup() {
         return savedFromCoup;
     }
     void General::onStartTurn() {
-        int currectTurn = game.getTurnCounter();
-        for(auto it = savedFromCoup.begin(); it != savedFromCoup.end();) {
-            const std::string& playerName = it->first;
-            if(indexOfSavedFromCoup.count(playerName)>0 && indexOfSavedFromCoup[playerName] < currectTurn) {
-                it = savedFromCoup.erase(it);
-                indexOfSavedFromCoup.erase(playerName);
-            } else {
-                ++it;
-            } 
+    for (auto it = savedFromCoup.begin(); it != savedFromCoup.end(); ) {
+        const std::string& playerName = it->first;
+        
+        // If the player being saved is the one whose turn it is now, expire protection
+        if (game.turn() == playerName) {
+            it = savedFromCoup.erase(it);
+            indexOfSavedFromCoup.erase(playerName);
+        } else {
+            ++it;
         }
-        Player::onStartTurn();
     }
+
+    Player::onStartTurn();
+}
+
 }
         
