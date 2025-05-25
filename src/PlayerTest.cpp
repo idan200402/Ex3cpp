@@ -11,7 +11,7 @@
 
 namespace ex3 {
 
-    Player::Player(Game& game, const std::string& name)
+    PlayerTest::PlayerTest(Game& game, const std::string& name)
         : game(game),
           name(name),
           role(""),
@@ -29,47 +29,47 @@ namespace ex3 {
         game.addPlayer(this);
     }
 
-    const std::string& Player::getName() const {
+    const std::string& PlayerTest::getName() const {
         return name;
     }
 
-    const std::string& Player::getRole() const {
+    const std::string& PlayerTest::getRole() const {
         return role;
     }
 
-    int Player::getCoinsCount() const {
+    int PlayerTest::getCoinsCount() const {
         return coins;
     }
 
-    bool Player::isAlive() const {
+    bool PlayerTest::isAlive() const {
         return alive;
     }
 
-    const std::string& Player::getLastMove() const {
+    const std::string& PlayerTest::getLastMove() const {
         return lastMove;
     }
 
-    const std::string& Player::getLastTarget() const {
+    const std::string& PlayerTest::getLastTarget() const {
         return lastTarget;
     }
-    Player::~Player() {
+    PlayerTest::~PlayerTest() {
         //no need to delete game, as it is not owned by this class
     }
 
-    bool Player::isSanctioned() {
+    bool PlayerTest::isSanctioned() {
         bool currentSanctioned = sanctioned;
         this->sanctioned = false; // Reset the sanctioned status after checking
         return currentSanctioned;
     }
 
-    void Player::addCoins(int amount) {
+    void PlayerTest::addCoins(int amount) {
         if (amount < 0) {
             throw std::invalid_argument("Amount must be non-negative");
         }
         coins += amount;
     }
 
-    void Player::removeCoins(int amount) {
+    void PlayerTest::removeCoins(int amount) {
         if (amount < 0) {
             throw std::invalid_argument("Amount must be non-negative");
         }
@@ -78,7 +78,7 @@ namespace ex3 {
         }
         coins -= amount;
     }
-    void Player::onStartTurn() {
+    void PlayerTest::onStartTurn() {
         if(game.isShuttingDown()) {
             throw std::runtime_error("Game is shutting down");
         }
@@ -93,14 +93,14 @@ namespace ex3 {
         }
     }
 
-    void Player::deactivate() {
+    void PlayerTest::deactivate() {
         alive = false;
     }
 
-    void Player::markSanctioned(bool status) {
+    void PlayerTest::markSanctioned(bool status) {
         sanctioned = status;
     }
-    void Player::gather() {
+    void PlayerTest::gather() {
         if (!game.isPlayerTurn(this)) {
             throw std::runtime_error("It's not your turn");
         }
@@ -113,7 +113,7 @@ namespace ex3 {
         lastTarget = "";
         game.nextTurn();
     }
-    void Player::tax() {
+    void PlayerTest::tax() {
         if (!game.isPlayerTurn(this)) {
             throw std::runtime_error("It's not your turn");
         }
@@ -124,8 +124,8 @@ namespace ex3 {
                 if (governor == nullptr) {
                     throw std::runtime_error("Player is not a Governor or the dinamic_cast failed");
                 }
-                auto Isfound = governor->getEnabledTax().find(this->getName());
-                if (Isfound != governor->getEnabledTax().end() && Isfound->second == true) {
+                auto Isfound = governor->getList().find(this->getName());
+                if (Isfound != governor->getList().end() && Isfound->second == true) {
                     Isfound->second = false;
                     isEnabled = true;
                 }
@@ -141,7 +141,7 @@ namespace ex3 {
         lastTarget = "";
         game.nextTurn();
     }
-   void Player::bribe() {
+   void PlayerTest::bribe() {
     if (!game.isPlayerTurn(this)) {
         throw std::runtime_error("It's not your turn");
     }
@@ -160,8 +160,8 @@ namespace ex3 {
             if (judge == nullptr) {
                 throw std::runtime_error("Player is not a Judge or the dynamic_cast failed");
             }
-            auto Isfound = judge->getBlockBribed().find(this->getName());
-            if (Isfound != judge->getBlockBribed().end() && Isfound->second == true) {
+            auto Isfound = judge->getList().find(this->getName());
+            if (Isfound != judge->getList().end() && Isfound->second == true) {
                 Isfound->second = false;
                 isBlocked = true;
             }
@@ -181,7 +181,7 @@ namespace ex3 {
 }
 
 
-    void Player::arrest(Player& target) {
+    void PlayerTest::arrest(PlayerTest& target) {
 
         if (!game.isPlayerTurn(this)) {
             throw std::runtime_error("It's not your turn");
@@ -197,8 +197,8 @@ namespace ex3 {
                 if (spy == nullptr) {
                     throw std::runtime_error("Player is not a Spy or the dinamic_cast failed");
                 }
-                auto Isfound = spy->getArrestDisabled().find(target.getName());
-                if (Isfound != spy->getArrestDisabled().end() && Isfound->second == true) {
+                auto Isfound = spy->getList().find(target.getName());
+                if (Isfound != spy->getList().end() && Isfound->second == true) {
                     Isfound->second = false;
                     isBlocked = true;
 
@@ -234,7 +234,7 @@ namespace ex3 {
         }
         
     }
-    void Player::sanction(Player& target) {
+    void PlayerTest::sanction(PlayerTest& target) {
         if (!game.isPlayerTurn(this)) {
             throw std::runtime_error("It's not your turn");
         }
@@ -250,7 +250,7 @@ namespace ex3 {
         target.markSanctioned(true);
         game.nextTurn();
     }
-    void Player::coup(Player& target) {
+    void PlayerTest::coup(PlayerTest& target) {
         if (!game.isPlayerTurn(this)) {
             throw std::runtime_error("It's not your turn");
         }
@@ -268,8 +268,8 @@ namespace ex3 {
                 if (general == nullptr) {
                     throw std::runtime_error("Player is not a General or the dinamic_cast failed");
                 }
-                auto Isfound = general->getSavedFromCoup().find(target.getName());
-                if (Isfound != general->getSavedFromCoup().end() && Isfound->second == true) {
+                auto Isfound = general->getList().find(target.getName());
+                if (Isfound != general->getList().end() && Isfound->second == true) {
                     isSaved = true;
                     break;
                 }

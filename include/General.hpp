@@ -9,11 +9,14 @@ namespace ex3 {
         private:
             std::unordered_map<std::string, bool> savedFromCoup;
             std::unordered_map<std::string, int> indexOfSavedFromCoup;
+            std::unordered_map<std::string, bool>& getSavedFromCoup();
+            void saveFromCoup(PlayerTest& target);
         public:
             General(Game& game, const std::string& name);
-            void saveFromCoup(Player& target);
-            std::unordered_map<std::string, bool>& getSavedFromCoup();
+            void mainAbility(Player* target) override;
+            void secondaryAbility(Player* target) override; 
             void onStartTurn() override;
+            std::unordered_map<std::string, bool>& getList() override;
     };
 }
             

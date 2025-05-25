@@ -2,6 +2,7 @@
 #include "doctest.h"
 #include "include/Game.hpp"
 #include "include/Player.hpp"
+#include "include/PlayerTest.hpp"
 #include "include/RoleFactory.hpp"
 #include "include/Governor.hpp"
 #include "include/Baron.hpp"
@@ -16,24 +17,24 @@ TEST_CASE("Testing Game Class Functionality") {
     ex3::Game game;
     SUBCASE("Adding Players") {
         //testing the addPlayer method its happening when we initialize the player.
-        Player* player1 = new Player(game, "Barak");
-        Player* player2 = new Player(game, "Rod");
+        PlayerTest* player1 = new PlayerTest(game, "Barak");
+        PlayerTest* player2 = new PlayerTest(game, "Rod");
         auto players = game.getPlayers();
         CHECK(players.size() == 2);
         CHECK(players[0]->getName() == "Barak");
         CHECK(players[1]->getName() == "Rod");
         //because the name is the identifier of the player, we should not be able to add a player with the same name.
-        CHECK_THROWS( new Player(game, "Barak")); 
+        CHECK_THROWS( new PlayerTest(game, "Barak")); 
         //trying to add seven players to the game , the seventh player should throw an error.
-        Player* p3_ = new Player(game, "C");
-        Player* p4 = new Player(game, "D");
-        Player* p5 = new Player(game, "E");
-        Player* p6 = new Player(game, "F");
-        CHECK_THROWS(new Player(game, "G"));
+        PlayerTest* p3_ = new PlayerTest(game, "C");
+        PlayerTest* p4 = new PlayerTest(game, "D");
+        PlayerTest* p5 = new PlayerTest(game, "E");
+        PlayerTest* p6 = new PlayerTest(game, "F");
+        CHECK_THROWS(new PlayerTest(game, "G"));
     }
     SUBCASE("Removing Players") {
-        Player* player1 = new Player(game, "Barak");
-        Player* player2 = new Player(game, "Rod");
+        PlayerTest* player1 = new PlayerTest(game, "Barak");
+        PlayerTest* player2 = new PlayerTest(game, "Rod");
         game.removePlayer(player1);
         //the number should be 1 because we removed one player
         auto players = game.getPlayers();
@@ -50,8 +51,8 @@ TEST_CASE("Testing Game Class Functionality") {
     SUBCASE("Game Turn Functionality") {
         //should throw an error if there are no players in the game
         CHECK_THROWS(game.turn());
-        Player* player1 = new Player(game, "Barak");
-        Player* player2 = new Player(game, "Rod");
+        PlayerTest* player1 = new PlayerTest(game, "Barak");
+        PlayerTest* player2 = new PlayerTest(game, "Rod");
         //the first player to be added to the game is the first player to play
         CHECK(game.turn() == "Barak");
         player1->gather();
@@ -60,8 +61,8 @@ TEST_CASE("Testing Game Class Functionality") {
     SUBCASE("Game Winner Functionality") {
         //there are no players in the game
         CHECK_THROWS(game.getWinner());
-        Player* player1 = new Player(game, "Barak");
-        Player* player2 = new Player(game, "Rod");
+        PlayerTest* player1 = new PlayerTest(game, "Barak");
+        PlayerTest* player2 = new PlayerTest(game, "Rod");
         //the game is still ongoing
         CHECK_THROWS(game.getWinner());
         game.removePlayer(player1);
@@ -69,8 +70,8 @@ TEST_CASE("Testing Game Class Functionality") {
         CHECK(game.getWinner() == "Rod");
     }
     SUBCASE("Game Turn Counter Functionality") {
-        Player* player1 = new Player(game, "Barak");
-        Player* player2 = new Player(game, "Rod");
+        PlayerTest* player1 = new PlayerTest(game, "Barak");
+        PlayerTest* player2 = new PlayerTest(game, "Rod");
         CHECK(game.getTurnCounter() == 0);
         player1->gather();
         CHECK(game.getTurnCounter() == 1);
@@ -78,8 +79,8 @@ TEST_CASE("Testing Game Class Functionality") {
         CHECK(game.getTurnCounter() == 2);
     }
     SUBCASE("Game Active Player Count Functionality") {
-        Player* player1 = new Player(game, "Barak");
-        Player* player2 = new Player(game, "Rod");
+        PlayerTest* player1 = new PlayerTest(game, "Barak");
+        PlayerTest* player2 = new PlayerTest(game, "Rod");
         CHECK(game.getActivePlayerCount() == 2);
         game.removePlayer(player1);
         CHECK(game.getActivePlayerCount() == 1);
@@ -90,7 +91,7 @@ TEST_CASE("Testing Game Class Functionality") {
 TEST_CASE("Testing Player Class Functionality") {
     ex3::Game game;
     SUBCASE("Player Initialization") {
-        Player* player1 = new Player(game, "Barak");
+        PlayerTest* player1 = new PlayerTest(game, "Barak");
         CHECK(player1->getName() == "Barak");
         CHECK(player1->getCoinsCount() == 0);
         CHECK(player1->isAlive() == true);
@@ -98,10 +99,10 @@ TEST_CASE("Testing Player Class Functionality") {
         CHECK(player1->getLastTarget() == "");
         CHECK(player1->isSanctioned() == false);
         //if a player has no name it should throw an error
-        CHECK_THROWS(new Player(game, ""));
+        CHECK_THROWS(new PlayerTest(game, ""));
     }
     SUBCASE("Add and subtract coins") {
-        Player* player1 = new Player(game, "Barak");
+        PlayerTest* player1 = new PlayerTest(game, "Barak");
         player1->addCoins(5);
         CHECK(player1->getCoinsCount() == 5);
         player1->removeCoins(2);
@@ -114,8 +115,8 @@ TEST_CASE("Testing Player Class Functionality") {
     }
     SUBCASE("Player Actions") {
         SUBCASE("Gather") {
-            Player* player1 = new Player(game, "Barak");
-            Player* player2 = new Player(game, "Rod");
+            PlayerTest* player1 = new PlayerTest(game, "Barak");
+            PlayerTest* player2 = new PlayerTest(game, "Rod");
             player1->gather();
             CHECK(player1->getCoinsCount() == 1);
             CHECK(player1->getLastMove() == "gather");
@@ -124,8 +125,8 @@ TEST_CASE("Testing Player Class Functionality") {
             CHECK_THROWS(player1->gather());
         }
         SUBCASE("Tax") {
-            Player* player1 = new Player(game, "Barak");
-            Player* player2 = new Player(game, "Rod");
+            PlayerTest* player1 = new PlayerTest(game, "Barak");
+            PlayerTest* player2 = new PlayerTest(game, "Rod");
             player1->tax();
             CHECK(player1->getCoinsCount() == 3);
             CHECK(player1->getLastMove() == "tax");
@@ -134,8 +135,8 @@ TEST_CASE("Testing Player Class Functionality") {
             CHECK_THROWS(player1->tax());
         }
         SUBCASE("Bribe") {
-            Player* player1 = new Player(game, "Barak");
-            Player* player2 = new Player(game, "Rod");
+            PlayerTest* player1 = new PlayerTest(game, "Barak");
+            PlayerTest* player2 = new PlayerTest(game, "Rod");
             //he has to have at least 4 coins to bribe
             CHECK_THROWS(player1->bribe());
             player1->addCoins(4);
@@ -152,8 +153,8 @@ TEST_CASE("Testing Player Class Functionality") {
             CHECK_NOTHROW(player1->gather());
         }
         SUBCASE("Arrest") {
-            Player* player1 = new Player(game, "Barak");
-            Player* player2 = new Player(game, "Rod");
+            PlayerTest* player1 = new PlayerTest(game, "Barak");
+            PlayerTest* player2 = new PlayerTest(game, "Rod");
             player1->gather();
             player2->arrest(*player1);
             CHECK(player1->getCoinsCount() == 0);
@@ -175,8 +176,8 @@ TEST_CASE("Testing Player Class Functionality") {
             CHECK_THROWS(player1->arrest(*player2));
         }
         SUBCASE("Sanction") {
-            Player* player1 = new Player(game, "Barak");
-            Player* player2 = new Player(game, "Rod");
+            PlayerTest* player1 = new PlayerTest(game, "Barak");
+            PlayerTest* player2 = new PlayerTest(game, "Rod");
             player1->addCoins(3);
             player1->sanction(*player2);
             CHECK(player1->getLastMove() == "sanction");
@@ -190,8 +191,8 @@ TEST_CASE("Testing Player Class Functionality") {
             CHECK_NOTHROW(player2->gather());
         }
         SUBCASE("Coup") {
-            Player* player1 = new Player(game, "Barak");
-            Player* player2 = new Player(game, "Rod");
+            PlayerTest* player1 = new PlayerTest(game, "Barak");
+            PlayerTest* player2 = new PlayerTest(game, "Rod");
             player1->addCoins(7);
             player1->coup(*player2);
             CHECK(player1->getLastMove() == "coup");
@@ -206,8 +207,8 @@ TEST_CASE("Testing Player Class Functionality") {
 TEST_CASE("Testing RoleFactory Class Functionality") {
     ex3::Game game;
     SUBCASE("Creating Players with Roles") {
-        Player* player1 = RoleFactory::createRole(game, "Barak", "Baron");
-        Player* player2 = RoleFactory::createRole(game, "Rod", "Judge");
+        PlayerTest* player1 = RoleFactory::createRole(game, "Barak", "Baron");
+        PlayerTest* player2 = RoleFactory::createRole(game, "Rod", "Judge");
         CHECK(player1->getName() == "Barak");
         CHECK(player1->getRole() == "Baron");
         CHECK(player2->getName() == "Rod");
@@ -224,34 +225,35 @@ TEST_CASE("Testing The Special Abilities of the different Roles") {
     ex3::Game game;
     SUBCASE("Governor Actions") {
         ex3::Governor* governor = new ex3::Governor(game, "Barak");
-        Player* player = new Player(game, "Rod");
+        Player* player = new Spy(game, "Rod");
         governor->tax();
         CHECK(governor->getCoinsCount() == 3); //he receives 3 coins instead of 2
         player->gather();
-        governor->undo(*player);
-        CHECK(governor->getEnabledTax().size() == 1);
+        governor->mainAbility(player); //the governor enables tax on the player
+        CHECK(governor->getList().size() == 1);
         CHECK_THROWS(player->tax()); // the governor enabled tax on the player
     }
     SUBCASE("Spy Actions") {
         Spy* spy = new Spy(game, "Barak");
-        Player* player = new Player(game, "Rod");
+        Player* player = new Judge(game, "Rod");
         player->addCoins(5);
-        CHECK(spy->inspectCoins(*player) == 5); // should return the number of coins
+        spy->mainAbility(player); // should assaign the inspected coins to the spy
+        CHECK(spy->inspectedCoins == 5); // the spy should have inspected the coins of the player
         CHECK(spy->getLastMove() == "inspect");
         CHECK(spy->getLastTarget() == "Rod");
-        CHECK(spy->getArrestDisabled().size() == 0);
+        CHECK(spy->getList().size() == 0);
         //the turn is still not over, the spy can block the arrest
-        spy->blockArrest(*player);
-        CHECK(spy->getArrestDisabled().size() == 1);
+        spy->secondaryAbility(player);
+        CHECK(spy->getList().size() == 1);
         CHECK_THROWS(player->arrest(*spy)); // the player should not be able to arrest the spy since the spy blocked the arrest
     }
     SUBCASE("Baron Actions") {
         Baron* baron = new Baron(game, "Barak");
-        Player* player = new Player(game, "Rod");
-        CHECK_THROWS(baron->invest()); // should throw an error since the player has no coins
+        Player* player = new General(game, "Rod");
+        CHECK_THROWS(baron->mainAbility(nullptr)); // should throw an error since the player has no coins
         player->addCoins(3); // the player has 3 coins to be able to sanction the baron
         baron->addCoins(3);
-        CHECK_NOTHROW(baron->invest()); // should not throw an error since the player has coins
+        CHECK_NOTHROW(baron->mainAbility(nullptr)); // should not throw an error since the player has coins
         CHECK(baron->getCoinsCount() == 6); // should return the number of coins after the investment
         CHECK(baron->getLastMove() == "invest");
         CHECK(baron->getLastTarget() == "");
@@ -264,13 +266,13 @@ TEST_CASE("Testing The Special Abilities of the different Roles") {
     SUBCASE("General Actions") {
         SUBCASE("A: testing the General's ability to block a coup") {
             General* general = new General(game, "Barak");
-            Player* player1 = new Player(game, "Rod");
-            Player* player2 = new Player(game, "Lechner");
-            CHECK_THROWS(general->saveFromCoup(*player2)); // General has no coins to save Lechner.
+            Player* player1 = new Baron(game, "Rod");
+            Player* player2 = new Baron(game, "Lechner");
+            CHECK_THROWS(general->mainAbility(player2)); // General has no coins to save Lechner.
             general->addCoins(5); // General has 5 coins to block the coup of Lechner.
             player1->addCoins(7); // Rod has 7 coins to coup Lechner.
-            CHECK_NOTHROW(general->saveFromCoup(*player2)); // General saves Lechner from being couped.
-            CHECK(general->getSavedFromCoup().size() == 1); // General has saved Lechner from coup.
+            CHECK_NOTHROW(general->mainAbility(player2)); // General saves Lechner from being couped.
+            CHECK(general->getList().size() == 1); // General has saved Lechner from coup.
             CHECK(general->getCoinsCount() == 0); // General has spent 5 coins to save Lechner.
             //He has another turn to play.
             CHECK_NOTHROW(general->gather());
@@ -279,7 +281,7 @@ TEST_CASE("Testing The Special Abilities of the different Roles") {
             CHECK_NOTHROW(player2->gather()); // Lechner can gather coins.
         }
         SUBCASE("B: testing the General's ability to recieve a coin after he being arrested") {
-            Player* player1 = new Player(game, "Barak");
+            Player* player1 = new ex3::Governor(game, "Barak");
             General* general = new General(game, "Rod");
             general->addCoins(5); //he need to have coins to be arrested
             player1->arrest(*general); // Barak arrests Rod.
@@ -290,16 +292,16 @@ TEST_CASE("Testing The Special Abilities of the different Roles") {
     SUBCASE("Judge Actions") {
         SUBCASE("A: testing the Judge's ability to cancel a bribe") {
             Judge* judge = new Judge(game, "Barak");
-            Player* player1 = new Player(game, "Rod");
+            Player* player1 = new Baron(game, "Rod");
             player1->addCoins(4); // Rod has 4 coins to bribe.
-            CHECK_NOTHROW(judge->blockBribe(*player1)); // Judge cancels Rod's bribe.
+            CHECK_NOTHROW(judge->mainAbility(player1)); // Judge cancels Rod's bribe.
             //using the jugdes second action
             judge->gather();
             CHECK_THROWS(player1->bribe()); // Rod should not be able to bribe after the Judge's action.
             CHECK(player1->getCoinsCount() == 0); // Rod should have 0 coins after he tries to bribe.
         }
         SUBCASE("B: testing if player that sanctioned a judge will lose 1 extra coin") {
-            Player* player1 = new Player(game, "Barak");
+            PlayerTest* player1 = new PlayerTest(game, "Barak");
             Judge* judge = new Judge(game, "Rod");
             player1->addCoins(4); // Barak has 3 coins to sanction Rod.
             CHECK_NOTHROW(player1->sanction(*judge)); // Barak sanctions Rod.
@@ -308,7 +310,7 @@ TEST_CASE("Testing The Special Abilities of the different Roles") {
     }
     SUBCASE("Merchand Actions") {
         SUBCASE("A: testing the Merchand's ability to revieve one coin for each turn that he has more than 2 coins") {
-            Player* player1 = new Player(game, "Barak");
+            PlayerTest* player1 = new PlayerTest(game, "Barak");
             Merchand* merchand = new Merchand(game, "Rod");
             merchand->addCoins(3); // Merchand has 3 coins.
             player1->gather();
@@ -319,7 +321,7 @@ TEST_CASE("Testing The Special Abilities of the different Roles") {
             CHECK(merchand->getCoinsCount() == 6); // Merchand should have 6 coins after the third turn.
         }
         SUBCASE("B: testing if the Merchand paying 2 coins to the bank instead of 1 to the player can arrested him") {
-            Player* player1 = new Player(game, "Barak");
+            PlayerTest* player1 = new PlayerTest(game, "Barak");
             Merchand* merchand = new Merchand(game, "Rod");
             merchand->addCoins(3); // Merchand has 3 coins.
             CHECK_NOTHROW(player1->arrest(*merchand)); // Barak arrests Rod.
@@ -330,8 +332,8 @@ TEST_CASE("Testing The Special Abilities of the different Roles") {
 }
 TEST_CASE("Testing if a Player is auto couping if he has 10 coins or more") {
     ex3::Game game;
-    Player* player1 = new Player(game, "Barak");
-    Player* player2 = new Player(game, "Rod");
+    PlayerTest* player1 = new PlayerTest(game, "Barak");
+    PlayerTest* player2 = new PlayerTest(game, "Rod");
     player2->addCoins(10); // Rod has 10 coins.
     player1->gather();
     CHECK_THROWS(player1->gather()); // Rod coups Barak automatically.

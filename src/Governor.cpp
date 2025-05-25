@@ -22,7 +22,7 @@ namespace ex3 {
         lastTarget = "";
         game.nextTurn();
     }
-    void Governor::undo(Player& target) {
+    void Governor::undo(PlayerTest& target) {
         if (!game.isPlayerTurn(this)) {
             throw std::runtime_error("It's not your turn");
         }
@@ -44,5 +44,16 @@ namespace ex3 {
         }
         Player::onStartTurn();
     }
-
+    void Governor::mainAbility(Player* target) {
+        if (!target) {
+            throw std::runtime_error("Target cannot be null");
+        }
+        undo(*target);
+    }
+    void Governor::secondaryAbility(Player* /*target*/) {
+        throw std::runtime_error("Governor does not have a secondary ability");
+    }
+    std::unordered_map<std::string, bool>& Governor::getList() {
+        return getEnabledTax();
+    }
 }

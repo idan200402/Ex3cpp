@@ -32,4 +32,16 @@ namespace ex3 {
         }
         Player::onStartTurn();
     }
+    std::unordered_map<std::string, bool>& Judge::getList() {
+        return getBlockBribed();
+    }
+    void Judge::mainAbility(Player* target) {
+        if (!target) {
+            throw std::runtime_error("Target cannot be null");
+        }
+        blockBribe(*target);
+    }
+    void Judge::secondaryAbility(Player* /*target*/) {
+        throw std::runtime_error("Judge does not have a secondary ability");
+    }
 }

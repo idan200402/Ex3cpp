@@ -4,28 +4,28 @@
 #include <vector>
 
 namespace ex3 {
-    class Player;
+    class PlayerTest;
     class Game {
     private:
         bool shuttingDown;
         int turnCounter;
         int currentPlayerIndex;
-        std::vector<Player*> players;
+        std::vector<PlayerTest*> players;
     public:
         Game();
-        void addPlayer(Player* player);
-        std::vector<Player*> getPlayers() const;
+        void addPlayer(PlayerTest* player);
+        std::vector<PlayerTest*> getPlayers() const;
         std::string turn() const;
         std::string getWinner() const;
         void nextTurn();
-        bool isPlayerTurn(Player* p) const;
-        void removePlayer(Player* p);
+        bool isPlayerTurn(PlayerTest* p) const;
+        void removePlayer(PlayerTest* p);
         int getActivePlayerCount() const;
         int getTurnCounter() const;
         ~Game();
         bool isShuttingDown() const;
-        bool isPlayerAlive(Player& p) const;
-        void forceTurnTo(Player* player);
+        bool isPlayerAlive(PlayerTest& p) const;
+        void forceTurnTo(PlayerTest* player);
       
     };  
 }

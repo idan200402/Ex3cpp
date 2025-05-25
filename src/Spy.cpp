@@ -10,14 +10,15 @@ namespace ex3 {
         this->arrestdisabled = {};
         this->indexOfArrestDisabled = {};
         this->blockArrestCount = 0;
+        this->inspectedCoins = 0;
     }
-    int Spy::inspectCoins(Player& target) {
+    void Spy::inspectCoins(Player& target) {
         if (!game.isPlayerTurn(this)) {
             throw std::runtime_error("It's not your turn");
         }
         lastMove = "inspect";
         lastTarget = target.getName();
-        return target.getCoinsCount();
+        this->inspectedCoins = target.getCoinsCount();
     }
     void Spy::blockArrest(Player& target) {
         if (blockArrestCount == 1) {
@@ -35,11 +36,14 @@ namespace ex3 {
     std::unordered_map<std::string, bool>& Spy::getArrestDisabled() {
         return arrestdisabled;
     }
+    std::unordered_map<std::string, bool>& Spy::getList() {
+        return getArrestDisabled();
+    }
     void Spy::onStartTurn() {
-        int currectTurn = game.getTurnCounter();
+        int currentTurn = game.getTurnCounter();
         for(auto it = arrestdisabled.begin(); it != arrestdisabled.end();) {
             const std::string& playerName = it->first;
-            if(indexOfArrestDisabled.count(playerName)>0 && indexOfArrestDisabled[playerName] < currectTurn) {
+            if(indexOfArrestDisabled.count(playerName)>0 && indexOfArrestDisabled[playerName] < currentTurn) {
                 it = arrestdisabled.erase(it);
                 indexOfArrestDisabled.erase(playerName);
             } else {
@@ -47,6 +51,18 @@ namespace ex3 {
             } 
         }
         Player::onStartTurn();
+    }
+    void Spy::mainAbility(Player* target) {
+        if (!target) {
+            throw std::runtime_error("Target cannot be null");
+        }
+        inspectCoins(*target);
+    }
+    void Spy::secondaryAbility(Player* target) {
+        if (!target) {
+            throw std::runtime_error("Target cannot be null");
+        }
+        blockArrest(*target);
     }
         
 }

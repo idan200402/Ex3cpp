@@ -25,6 +25,14 @@ namespace ex3 {
             addCoins(1);
         }
     }
+    void Baron::mainAbility(Player* target) {
+        (void)target; // To avoid unused parameter warning
+        invest();
+    }
+    void Baron::secondaryAbility(Player* /*target*/){
+        // The Baron does not have a secondary ability defined in this context.
+        throw std::runtime_error("Baron does not have a secondary ability");
+    }
 }
         
           
