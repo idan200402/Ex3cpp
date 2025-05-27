@@ -19,6 +19,7 @@ namespace ex3 {
         lastMove = "inspect";
         lastTarget = target.getName();
         this->inspectedCoins = target.getCoinsCount();
+        std::cout << "Spy " << this->getName() << " inspected " << target.getName() << "'s coins: " << this->inspectedCoins << std::endl;
     }
     void Spy::blockArrest(Player& target) {
         if (blockArrestCount == 1) {

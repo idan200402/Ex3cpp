@@ -22,7 +22,7 @@ namespace ex3 {
         lastTarget = "";
         game.nextTurn();
     }
-    void Governor::undo(PlayerTest& target) {
+    void Governor::undo(Player& target) {
         if (!game.isPlayerTurn(this)) {
             throw std::runtime_error("It's not your turn");
         }

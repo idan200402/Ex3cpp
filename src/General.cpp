@@ -10,7 +10,7 @@ namespace ex3 {
         this->indexOfSavedFromCoup = {};
     }
 
-    void General::saveFromCoup(PlayerTest& target) {
+    void General::saveFromCoup(Player& target) {
         if (!game.isPlayerTurn(this)) {
            throw std::runtime_error("It's not your turn");
         }

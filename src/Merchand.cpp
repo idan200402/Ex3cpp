@@ -9,7 +9,7 @@ namespace ex3 {
     }
 
     void Merchand::onStartTurn() {
-        PlayerTest::onStartTurn();
+        Player::onStartTurn();
          if(coins >= 3 && lastMove !="coup") {
             addCoins(1);
          }

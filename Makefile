@@ -11,7 +11,7 @@ OBJ_DIR = obj
 BIN_DIR = bin
 
 # File paths
-MAIN_SRC = src/main.cpp
+MAIN_SRC = $(SRC_DIR)/main.cpp
 TEST_SRC = tests.cpp
 DOCTEST = doctest.h
 
@@ -30,16 +30,16 @@ OBJECTS := $(patsubst $(SRC_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(SOURCES))
 all: Main
 
 # Build and run the main GUI app
-Main: $(MAIN_OBJ) $(filter-out $(TEST_OBJ), $(OBJECTS)) | $(BIN_DIR)
+Main: $(MAIN_OBJ) $(OBJECTS) | $(BIN_DIR)
 	$(CXX) $(CXXFLAGS) $^ -o $(TARGET_MAIN) $(SFML_FLAGS)
 	./$(TARGET_MAIN)
 
 # Build and run tests
-test: $(TEST_OBJ) $(filter-out $(MAIN_OBJ), $(OBJECTS)) | $(BIN_DIR)
+test: $(TEST_OBJ) $(OBJECTS) | $(BIN_DIR)
 	$(CXX) $(CXXFLAGS) $^ -o $(TARGET_TEST)
 	./$(TARGET_TEST)
 
-# Run valgrind memory checks (only run Main & Tests once, no double run)
+# Run valgrind memory checks
 valgrind: Main test
 	valgrind --leak-check=full $(TARGET_MAIN)
 	valgrind --leak-check=full $(TARGET_TEST)
