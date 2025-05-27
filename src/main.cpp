@@ -13,11 +13,15 @@
 #include <optional>
 
 using namespace ex3;
-
+//List of the public methods available to players , it will be presented as buttons in the game interface.
 const std::vector<std::string> publicMethods = {
     "gather", "tax", "bribe", "arrest", "sanction", "coup", "mainAbility", "secondAbility"
 };
-
+/**
+ * @struct Button
+ * @brief Represents a button in the game interface.
+ * Contains a rectangle shape, label text, action string, original color, and color change time.
+ */
 struct Button {
     sf::RectangleShape rect;
     sf::Text label;
@@ -26,13 +30,22 @@ struct Button {
     std::chrono::steady_clock::time_point colorChangeTime;
     bool isColorTemporary = false;
 };
-
+/**
+ * @struct TargetButton
+ * @brief Represents a button for selecting a target player.
+ * when a player chooses to perform an action that requires a target he required to select a target player.
+ */
 struct TargetButton {
     sf::RectangleShape rect;
     sf::Text label;
     int targetIndex = -1;
 };
-
+/**
+ * @brief Displays the welcome screen with options to start or exit the game.
+ * @param window The SFML render window to display the welcome screen.
+ * @param font The font used for text rendering.
+ * @return True if the user chooses to start the game, false if they choose to exit.
+ */
 bool showWelcomeScreen(sf::RenderWindow &window, sf::Font &font) {
     sf::Text title("Welcome to COUP", font, 40);
     title.setPosition(500, 150);
@@ -77,7 +90,11 @@ bool showWelcomeScreen(sf::RenderWindow &window, sf::Font &font) {
     }
     return false;
 }
-
+/**
+ * @brief Main function to run the Coup game.
+ * Initializes the game window, loads resources, and manages the game loop.
+ * @return Exit code of the program.
+ */
 int main() {
 main_loop:
     sf::RenderWindow window(sf::VideoMode(1600, 900), "Coup: Welcome");
@@ -90,12 +107,11 @@ main_loop:
     if (!showWelcomeScreen(window, font)) return 0;
 
     window.create(sf::VideoMode(1600, 900), "Coup: Enter Players");
-
+    // Load resources and initialize game state
     Game game;
     std::vector<std::string> roles = {"Spy", "Governor", "Merchand", "Judge", "Baron", "General"};
     std::vector<std::string> playerNames;
     int playerCount = 0;
-
     sf::Text prompt("Enter number of players (2-6):", font, 24);
     prompt.setPosition(40, 40);
     prompt.setFillColor(sf::Color::White);
