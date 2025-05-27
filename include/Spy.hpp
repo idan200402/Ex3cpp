@@ -32,8 +32,6 @@
          */
         std::unordered_map<std::string, bool>& getArrestDisabled();
     public:
-        /// Number of coins inspected by the Spy in the current turn
-        int inspectedCoins;
         /**
          * @brief Constructor for the Spy class.
          * Initializes the Spy with a name and associates it with a game instance, also with his role.

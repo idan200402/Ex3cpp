@@ -25,17 +25,18 @@ namespace ex3 {
         std::string lastMove;
         std::string lastTarget;
         bool sanctioned;
-        /**
-         * @brief Indicates whether the player has a next turn.
-         * This is used to determine if the player can perform actions in the next turn.
-         */
-        bool hasNextTurn;
+        
         /**
          * @brief each role has its own behavior when sanctioned.
          */
         virtual void whenSanctioned(const std::string& /*actionName*/) {}
         
     public:
+        /**
+         * @brief Indicates whether the player has a next turn.
+         * This is used to determine if the player can perform actions in the next turn.
+         */
+        bool hasNextTurn;
         /**
          * @brief Called at the start of each turn for this player.
          * This method can be overridden by derived classes to implement specific behavior.

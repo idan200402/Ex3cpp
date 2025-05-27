@@ -8,6 +8,8 @@
 #include <stdexcept>
 
 namespace ex3 {
+    // RoleFactory class is responsible for creating Player objects based on the specified role.
+    //its encupsulated in a static method createRole.
     Player* RoleFactory::createRole(Game& game, const std::string& name , const std::string& role) {
         if (role == "Baron") {
             return new Baron(game, name);
@@ -22,6 +24,7 @@ namespace ex3 {
         } else if (role == "Spy") {
             return new Spy(game, name);
         } else {
+            // If the role does not match any known roles, throw an exception.
             throw std::invalid_argument("this role: " + role + " does not exist");
         }
     }
