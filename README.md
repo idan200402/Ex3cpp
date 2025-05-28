@@ -55,6 +55,9 @@ make valgrind
 ## Testing
 The unit testing is done using the DOCTEST framework. The tests are located in the `tests.cpp`. The tests cover the game logic, player actions, role abilities and edge cases. 
 
+## Valgrind
+The "make valgrind" command runs the program with Valgrind to check for memory leaks. It shows a large amout of memory leaks, but they are all related to the SFML library and are not caused by our code , thus the command runs only on the tests.cpp file, which is not using the SFML and simulates the game logic without the GUI.
+
 ## Future Improvements
 - Improve the user interface and user experience with more animations and visual effects.
 - Add AI players to allow for single-player mode.
