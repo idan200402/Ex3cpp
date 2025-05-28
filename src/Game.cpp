@@ -66,14 +66,7 @@ namespace ex3 {
         }
         return ""; // This line should never be reached
     }
-    // Destructor for the Game class
-    Game::~Game() {
-        // Set the shuttingDown flag to true and delete all Player objects
-        shuttingDown = true;
-        for (Player* player : players) {
-            delete player; 
-        }
-    }
+
     int Game::getTurnCounter() const {
         return turnCounter;
     }
@@ -155,6 +148,13 @@ namespace ex3 {
         }
         // If the player does not exist or is dead, throw an error
         throw std::runtime_error("Cannot force turn to a non-existent or dead player");
+    }
+    Game::~Game() {
+        shuttingDown = true; // Set the shutting down flag to true
+        for (Player* player : players) {
+            delete player; // Delete each player to free memory
+        }
+        players.clear(); // Clear the players vector
     }
 
 }

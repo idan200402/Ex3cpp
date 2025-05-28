@@ -40,8 +40,7 @@ test: $(TEST_OBJ) $(OBJECTS) | $(BIN_DIR)
 	./$(TARGET_TEST)
 
 # Run valgrind memory checks
-valgrind: Main test
-	# valgrind --leak-check=full $(TARGET_MAIN)
+valgrind:  test	
 	valgrind --leak-check=full $(TARGET_TEST)
 
 # Compile source files into object files

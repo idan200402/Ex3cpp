@@ -81,11 +81,7 @@ namespace ex3 {
          * @return The number of turns that have been taken in the game.
          */
         int getTurnCounter() const;
-        /**
-         * @brief Destructor for the Game class.
-         * deletes all Player objects and sets the shuttingDown flag to true.
-         */
-        ~Game();
+        
         /**
          * @brief Checks if the game is in the process of shutting down.
          * @return true if the game is shutting down, false otherwise.
@@ -104,6 +100,13 @@ namespace ex3 {
          * @throws std::runtime_error if the player does not exist or is dead.
          */
         void forceTurnTo(Player* player);
+        /**
+         * @brief Destructor for the Game class.
+         * Cleans up the game state and deallocates memory for players.
+         */
+        ~Game();
+        Game& operator=(const Game&) = delete; // Disable assignment operator
+        Game(const Game&) = delete; // Disable copy constructor
       
     };  
 }

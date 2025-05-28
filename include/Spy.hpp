@@ -63,6 +63,11 @@
          * @return A reference to an unordered map of player names and their blocked status.
          */
         std::unordered_map<std::string, bool>& getList() override;
+        /**
+         * @brief returns the number of coins inspected by the Spy.
+         * @return The number of coins inspected by the Spy.
+         */
+        int getInspectedCoins();
     };
 }
         

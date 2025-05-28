@@ -141,5 +141,8 @@ namespace ex3 {
         virtual std::unordered_map<std::string, bool>& getList() {
             throw std::runtime_error(this->name + " does not have a list");
         }
+        Player(const Player&) = delete; // Disable copy constructor
+        Player& operator=(const Player&) = delete; // Disable copy assignment operator
+        Player(Player&&) = delete; // Disable move constructor
     };
 }

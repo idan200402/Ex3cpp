@@ -11,14 +11,16 @@
 #include "include/Merchand.hpp"
 #include "include/Spy.hpp"
 #include <stdexcept>
+#include <iostream>
+#include <sstream>
 using namespace ex3;
 //Testing the Game class and its methods
 TEST_CASE("Testing Game Class Functionality") {
     ex3::Game game;
     SUBCASE("Adding Players") {
         //testing the addPlayer method its happening when we initialize the player.
-        Player* player1 = new PlayerTest(game, "Barak");
-        Player* player2 = new PlayerTest(game, "Rod");
+        new PlayerTest(game, "Barak");
+        new PlayerTest(game, "Rod");
         auto players = game.getPlayers();
         CHECK(players.size() == 2);
         CHECK(players[0]->getName() == "Barak");
@@ -26,10 +28,10 @@ TEST_CASE("Testing Game Class Functionality") {
         //because the name is the identifier of the player, we should not be able to add a player with the same name.
         CHECK_THROWS( new PlayerTest(game, "Barak")); 
         //trying to add seven players to the game , the seventh player should throw an error.
-        Player* p3_ = new PlayerTest(game, "C");
-        Player* p4 = new PlayerTest(game, "D");
-        Player* p5 = new PlayerTest(game, "E");
-        Player* p6 = new PlayerTest(game, "F");
+        new PlayerTest(game, "C");
+        new PlayerTest(game, "D");
+        new PlayerTest(game, "E");
+        new PlayerTest(game, "F");
         CHECK_THROWS(new PlayerTest(game, "G"));
     }
     SUBCASE("Removing Players") {
@@ -62,7 +64,7 @@ TEST_CASE("Testing Game Class Functionality") {
         //there are no players in the game
         CHECK_THROWS(game.getWinner());
         Player* player1 = new PlayerTest(game, "Barak");
-        Player* player2 = new PlayerTest(game, "Rod");
+        new PlayerTest(game, "Rod");
         //the game is still ongoing
         CHECK_THROWS(game.getWinner());
         game.removePlayer(player1);
@@ -116,7 +118,7 @@ TEST_CASE("Testing Player Class Functionality") {
     SUBCASE("Player Actions") {
         SUBCASE("Gather") {
             Player* player1 = new PlayerTest(game, "Barak");
-            Player* player2 = new PlayerTest(game, "Rod");
+            new PlayerTest(game, "Rod");
             player1->gather();
             CHECK(player1->getCoinsCount() == 1);
             CHECK(player1->getLastMove() == "gather");
@@ -126,7 +128,7 @@ TEST_CASE("Testing Player Class Functionality") {
         }
         SUBCASE("Tax") {
             Player* player1 = new PlayerTest(game, "Barak");
-            Player* player2 = new PlayerTest(game, "Rod");
+            new PlayerTest(game, "Rod");
             player1->tax();
             CHECK(player1->getCoinsCount() == 2);
             CHECK(player1->getLastMove() == "tax");
@@ -136,7 +138,7 @@ TEST_CASE("Testing Player Class Functionality") {
         }
         SUBCASE("Bribe") {
             Player* player1 = new PlayerTest(game, "Barak");
-            Player* player2 = new PlayerTest(game, "Rod");
+            new PlayerTest(game, "Rod");
             //he has to have at least 4 coins to bribe
             CHECK_THROWS(player1->bribe());
             player1->addCoins(4);
@@ -237,8 +239,12 @@ TEST_CASE("Testing The Special Abilities of the different Roles") {
         Spy* spy = new Spy(game, "Barak");
         Player* player = new Judge(game, "Rod");
         player->addCoins(5);
-        spy->mainAbility(player); // should assaign the inspected coins to the spy
-        CHECK(spy->inspectedCoins == 5); // the spy should have inspected the coins of the player
+        std::stringstream buffer;
+        std::streambuf* oldCout = std::cout.rdbuf(buffer.rdbuf());
+        spy->mainAbility(player); // should print the number inspected
+        std::cout.rdbuf(oldCout); // restore cout
+        std::string output = buffer.str();
+        CHECK(output.find("coins: 5") != std::string::npos); // check if the output contains the expected string
         CHECK(spy->getLastMove() == "inspect");
         CHECK(spy->getLastTarget() == "Rod");
         CHECK(spy->getList().size() == 0);

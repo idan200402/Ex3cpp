@@ -100,7 +100,7 @@ main_loop:
     sf::RenderWindow window(sf::VideoMode(1600, 900), "Coup: Welcome");
     sf::Font font;
     if (!font.loadFromFile("assets/arial.ttf")) {
-        std::cerr << "❌ Failed to load font" << std::endl;
+        std::cerr << "Failed to load font" << std::endl;
         return 1;
     }
 
@@ -140,7 +140,7 @@ main_loop:
                             collectingNames = true;
                             prompt.setString("Enter name for player 1:");
                         } catch (...) {
-                            prompt.setString("❌ Must enter number 2–6:");
+                            prompt.setString("Must enter number 2-6:");
                         }
                     } else {
                         if (!inputBuffer.empty()) {
@@ -173,7 +173,7 @@ main_loop:
         try {
             RoleFactory::createRole(game, name, role);
         } catch (const std::exception& e) {
-            std::cerr << "❌ Failed to create " << name << ": " << e.what() << std::endl;
+            std::cerr << " Failed to create " << name << ": " << e.what() << std::endl;
         }
     }
 
