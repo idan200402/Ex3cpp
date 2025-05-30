@@ -63,7 +63,7 @@ namespace ex3 {
          * @brief If the player is not sanctioned it will add 1 coin to the player.
          * @throws std::runtime_error if it's not the player's turn or if the player is sanctioned.
          */
-        virtual void gather();
+         void gather();
         /**
          * @brief If the player is not sanctioned it will add 2 coins to the player.
          * @throws std::runtime_error if it's not the player's turn or if the player is sanctioned.
@@ -78,7 +78,7 @@ namespace ex3 {
          * @throws std::runtime_error if the dynamic_cast to Judge fails.
          * @throws std::runtime_error if the bribe was blocked by a Judge.
          */
-        virtual void bribe();
+         void bribe();
         /**
          * @brief Arrests a target player, taking a coin from them.
          * @param target The player to be arrested.
@@ -87,7 +87,7 @@ namespace ex3 {
          * @throws std::runtime_error if the dynamic_cast to Spy fails.
          * @throws std::runtime_error if the player tries to arrest the same target twice in a row.
          */
-        virtual void arrest(Player & target);
+         void arrest(Player & target);
         /**
          * @brief Sanctions a target player, removing 3 coins from this player and marking the target as sanctioned.
          * it will enable the target to make a financial action on his upcoming turn.
@@ -95,7 +95,7 @@ namespace ex3 {
          * @throws std::runtime_error if it's not the player's .
          * @throws std::runtime_error if the player does not have enough coins.
          */
-        virtual void sanction(Player& target);
+         void sanction(Player& target);
         /**
          * @brief Coup a target player, removing 7 coins from this player and killing the target.
          * @param target The player to be couped.
@@ -103,7 +103,7 @@ namespace ex3 {
          * @throws std::runtime_error if the dynamic_cast to General fails.
          * @throws std::runtime_error if the target is being protected by a General.
          */
-        virtual void coup(Player& target);
+         void coup(Player& target);
         /**
          * @brief add coins to the player.
          * @param amount The amount of coins to add.
